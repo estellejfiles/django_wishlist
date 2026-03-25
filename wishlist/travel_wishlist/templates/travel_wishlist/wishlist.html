@@ -1,17 +1,27 @@
 <h2>Travel Wishlist</h2>
 
+<!-- create form for post request when form submitted to add place -->
 <form method="POST" action="{% url 'place_list' %}">
     {% csrf_token %}
     {{ new_place_form }}
     <button type="submit">Add New Place</button>
 </form>
 
+<!-- loops through places in database -->
 {% for place in places %}
 
 <div>
+    <!-- display each place name -->
     {{  place.name  }}
+    <!-- create form for post request when user marks place as visited;
+     look up url via place.pk variable and fill in placeholder for integer number -->
+     <form method="POST" action="{% url 'place_was_visited' place.pk %}">
+        {% csrf_token %}
+        <button>Visited!</button>
+     </form>
 </div>
 
+<!-- if wishlist is empty, display message -->
 {% empty %}
 
 <p>You have no places in your wishlist.</p>

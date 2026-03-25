@@ -19,7 +19,7 @@ def place_list(request):
             # reloads home page
             return redirect('place_list')
 
-    # gets places list from Place objects where visited=fale & orders by name
+    # gets places list from Place objects where visited=false & orders by name
     places = Place.objects.filter(visited=False).order_by('name')
     # create new_place_form to create HTML
     new_place_form = NewPlaceForm()
@@ -32,8 +32,21 @@ def places_visited(request):
     visited = Place.objects.filter(visited=True)
     # return render request with data
     return render(request, 'travel_wishlist/visited.html', { 'visited': visited })
-# create function to handle about page url request
 
+# create function to handle request to set place as visited
+def place_was_visited(request, place_pk):
+    # only execute on post methods
+    if request.method == 'POST':
+        # get place being updated by matching with place_pk; store in variable
+        place = Place.objects.get(pk=place_pk)
+        # set place visited to true
+        place.visited = True
+        # save changes
+        place.save()
+    # return redirect to wishlist visited places
+    return redirect('places_visited')
+
+# create function to handle about page url request
 def about(request):
     # create data to use as part of response
     author = 'Estelle'
