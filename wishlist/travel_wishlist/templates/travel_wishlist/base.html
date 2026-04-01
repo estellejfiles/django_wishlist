@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <!-- create page header -->
+    <head>
+        <title>Travel Wishlist</title>
+        <!-- link to sakura stylesheet uploaded -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css" type="text/css">
+        <!-- link to custom stylesheet created -->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    </head>
+
+    <!-- heading to display on every page -->
+    <h1>Where Do You Want To Go?</h1>
+
+    <!-- fill in body with page content using block content -->
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+
+    <!-- display description & links to pages at bottom -->
+     <div>
+        <p>A travel wishlist, built with Django</p>
+        <a class="nav-link" href="{% url 'place_list' %}">Your Wishlist</a>
+        <a class="nav-link" href="{% url 'places_visited' %}">Places You've Visited</a>
+     </div>
+</html>
