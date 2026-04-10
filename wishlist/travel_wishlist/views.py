@@ -28,7 +28,7 @@ def place_list(request):
 
 # create function to handle visited page url request
 def places_visited(request):
-    # get list of visited places
+    # database is queried for list of visited places
     visited = Place.objects.filter(visited=True)
     # return render request with data
     return render(request, 'travel_wishlist/visited.html', { 'visited': visited })
@@ -38,7 +38,7 @@ def place_was_visited(request, place_pk):
     # only execute on post methods
     if request.method == 'POST':
         # get place being updated by matching with place_pk; store in variable
-        place = Place.objects.get(pk=place_pk)
+        place = Place.objects.get(Place, pk=place_pk)
         # set place visited to true
         place.visited = True
         # save changes
