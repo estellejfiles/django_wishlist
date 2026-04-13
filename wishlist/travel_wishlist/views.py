@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Place
-from .forms import NewPlaceForm
+from .forms import NewPlaceForm, TripReviewForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
+from django.contrib import messages
 
 # Create your views here
 
@@ -62,9 +63,34 @@ def place_was_visited(request, place_pk):
 def place_details(request, place_pk):
     # get place object
     place = get_object_or_404(Place, pk=place_pk)
-    # return render request with data
-    return render(request, 'travel_wishlist/place_detail.html', {'place': place})
-
+    # return forbidden response if place does not belong to user
+    if place.user != request.user:
+        return HttpResponseForbidden()
+    # check if post request
+    if request.method == 'POST':
+        # read form data by making new trip review form from request data
+        form = TripReviewForm(request.POST, request.FILES, instance=place)
+        # verify form is valid (all required fields are filled in and data is valid against db constraints)
+        if form.is_valid():
+            # save form to db model
+            form.save()
+            # show temporary message to user
+            messages.info(request, 'Trip information updated!')
+        else:
+            # show temporary error message to user if form is not valid
+            messages.error(request, form.errors)
+        # return redirect to place details page
+        return redirect('place_details', place_pk=place_pk)
+    # execute else clause for get request
+    else:
+        # if place is visited show form using trip review form
+        if place.visited:
+            review_form = TripReviewForm(instance=place)
+            return render(request, 'travel_wishlist/place_detail.html', {'place': place, 'review_form': review_form})
+        # if place is not visited, show place details without form
+        else:
+            return render(request, 'travel_wishlist/place_detail.html', {'place': place})
+    
 # create function to handle delete place url request
 @login_required
 def delete_place(request, place_pk):

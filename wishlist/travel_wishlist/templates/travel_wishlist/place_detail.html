@@ -7,6 +7,45 @@
 <!-- display message depending on if user visited place or not -->
 {% if place.visited %}
     <p>You have visited {{ place.name }}!</p>
+
+    <!-- display notes for visited place -->
+    <h3>Notes</h3>
+    <!-- if there are no notes, default to message -->
+    <p>{{ place.notes|default:"No Notes." }}</p>
+
+    <!-- display date visited -->
+    <h3>Date Visited</h3>
+    <!-- if there is no date visited, default to message -->
+    <p>{{ place.date_visited|default:"Date visited not set." }}</p>
+
+    <!-- display photo for visited place -->
+    <h3>Photo</h3>
+    <!-- if there is a photo, display it -->
+    {% if place.photo %}
+        <img src="{{ place.photo.url }}">
+    <!-- if there is no photo, display message -->
+    {% else %}
+        <p>No photo uploaded.</p>
+    {% endif %}
+
+    <!-- check if there are messages to display -->
+    {% if messages %}
+    <div class="messages">
+        <!-- loop through messages and display them in paragraph -->
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- form to submit review -->
+    <form action="{% url 'place_details' place.pk %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- display review form as paragraph -->
+        {{ review_form.as_p}}
+        <button type="submit">Save Review!</button>
+    </form>
+
 {% else %}
     <p>You have not visited {{ place.name }} yet.</p>
 
